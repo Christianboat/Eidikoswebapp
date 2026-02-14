@@ -6,3 +6,4 @@ email_validator
 python-dotenv
 psycopg2-binary
 gunicorn==21.2.0
+Pillow
