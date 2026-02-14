@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+
+{% block title %}Digital Hub | Eidikos Global Events{% endblock %}
+{% block description %}Explore Eidikos Digital Platform - an innovative hub for online competitions, professional
+development, and global learning opportunities.{% endblock %}
+
+{% block content %}
+<!-- DIGITAL HUB -->
+{% if page and page.is_coming_soon %}
+<!-- COMING SOON / VISION PAGE -->
+<section id="digital-vision" style="background: white; padding: 100px 0; text-align: center;">
+    <div class="container">
+
+        <!-- Hero -->
+        <div style="margin-bottom: 60px;">
+            <div
+                style="display: inline-block; background: var(--accent); color: white; padding: 5px 15px; border-radius: 20px; font-weight: 700; margin-bottom: 20px;">
+                <i class="fas fa-rocket"></i> COMING SOON
+            </div>
+            <h1
+                style="font-size: 3rem; font-weight: 800; color: var(--primary); margin-bottom: 20px; line-height: 1.2;">
+                Envisioning the Future of<br>Digital Learning
+            </h1>
+            <p style="font-size: 1.2rem; color: #666; max-width: 800px; margin: 0 auto;">
+                We are building an innovative hub for online competitions, professional development, and global
+                connectivity.
+                The Eidikos Digital Platform will soon bring our entire ecosystem to your fingertips.
+            </p>
+        </div>
+
+        <!-- Vision Grid -->
+        <div class="grid-3" style="text-align: left; margin-bottom: 60px;">
+            <div class="digital-feature-card">
+                <i class="fas fa-trophy" style="font-size: 2rem; color: var(--secondary); margin-bottom: 15px;"></i>
+                <h3>Global Competitions</h3>
+                <p>A seamless portal for live rounds, automated scoring, and international rankings.</p>
+            </div>
+            <div class="digital-feature-card">
+                <i class="fas fa-chalkboard-teacher"
+                    style="font-size: 2rem; color: var(--secondary); margin-bottom: 15px;"></i>
+                <h3>Professional Growth</h3>
+                <p>On-demand courses, webinars, and verifiable digital certification for educators.</p>
+            </div>
+            <div class="digital-feature-card">
+                <i class="fas fa-network-wired"
+                    style="font-size: 2rem; color: var(--secondary); margin-bottom: 15px;"></i>
+                <h3>Connected Ecosystem</h3>
+                <p>Integrated profiles, smart registration, and community networking features.</p>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div style="background: var(--light-bg); padding: 40px; border-radius: 20px; max-width: 700px; margin: 0 auto;">
+            <h3 style="margin-bottom: 15px;">Be the First to Know</h3>
+            <p style="margin-bottom: 25px;">Join our waitlist to get exclusive early access and updates on the platform
+                launch.</p>
+            <form action="{{ url_for('main.contact') }}" method="get">
+                <button type="submit" class="btn btn-gold">Join the Waitlist</button>
+            </form>
+        </div>
+
+    </div>
+</section>
+
+{% else %}
+<!-- DIGITAL HUB (Full Version) -->
+<section id="digital" style="background: white;">
+    <div class="container">
+        <div class="section-header">
+            <p style="color: var(--secondary); font-weight: 700; text-transform: uppercase;">Digital Platform</p>
+            <h2>{{ page.hero_title if page else '💻 THE EIDIKOS DIGITAL PLATFORM' }}</h2>
+            {% if sections and sections.intro %}
+            {{ sections.intro.content | safe }}
+            {% else %}
+            <p>Where Technology Meets Learning, Competition, and Opportunity</p>
+            <p>In a fast-evolving world, education must be accessible, engaging, and borderless. The Eidikos Digital
+                Platform is our innovative technological hub designed to deliver competitions, training, certification,
+                and engagement to learners and professionals worldwide.</p>
+            <p style="margin-top: 20px;">Whether you are a student preparing for a competition, a teacher seeking
+                professional development, or a school leader participating in an expo — the Eidikos platform brings
+                everything to your fingertips.</p>
+            {% endif %}
+        </div>
+
+        <!-- Ecosystem List -->
+        <div style="margin-bottom: 60px;">
+            <h3 style="text-align: center; margin-bottom: 30px;">🌐 A GLOBAL LEARNING & EVENT ECOSYSTEM</h3>
+            <p style="text-align: center; margin-bottom: 30px;">Our digital platform integrates all major Eidikos
+                programs into one seamless experience:</p>
+            <div class="ecosystem-list">
+                <!-- Static list as it represents fixed platform features -->
+                <div class="ecosystem-item"><i class="fas fa-check-circle"></i> Competitions</div>
+                <div class="ecosystem-item"><i class="fas fa-check-circle"></i> Training & professional development
+                </div>
+                <div class="ecosystem-item"><i class="fas fa-check-circle"></i> Digital certificates</div>
+                <div class="ecosystem-item"><i class="fas fa-check-circle"></i> Partner portals</div>
+                <div class="ecosystem-item"><i class="fas fa-check-circle"></i> Exhibitions & expos</div>
+                <div class="ecosystem-item"><i class="fas fa-check-circle"></i> Leaderboards</div>
+                <div class="ecosystem-item"><i class="fas fa-check-circle"></i> Learning modules</div>
+                <div class="ecosystem-item"><i class="fas fa-check-circle"></i> Registration & ticketing</div>
+                <div class="ecosystem-item"><i class="fas fa-check-circle"></i> Community engagement</div>
+            </div>
+            <p style="text-align: center; font-weight: 700; color: var(--primary); margin-top: 30px;">A truly all-in-one
+                system built to empower learning at scale.</p>
+        </div>
+
+        <!-- Key Features Grid -->
+        <div style="margin-bottom: 60px;">
+            <h3 style="margin-bottom: 40px;">🔑 KEY FEATURES OF THE PLATFORM</h3>
+            <div class="grid-3">
+                {% if sections and sections.features %}
+                {{ sections.features.content | safe }}
+                {% else %}
+                <!-- 1 -->
+                <div class="digital-feature-card">
+                    <h3>1. Online Competition Portal</h3>
+                    <p style="margin-bottom: 15px; font-weight: 600;">A dedicated space for:</p>
+                    <ul>
+                        <li>Live online rounds</li>
+                        <li>Practice quizzes and preparatory activities</li>
+                        <li>Automated scoring</li>
+                        <li>Virtual stages</li>
+                        <li>Regional and international competitions</li>
+                    </ul>
+                    <p style="margin-top: 15px; font-style: italic;">Ideal for Global Spell Bee, Math Master Challenge,
+                        Debate League, and more.</p>
+                </div>
+                <!-- 2 -->
+                <div class="digital-feature-card">
+                    <h3>2. Learning & Training Hub</h3>
+                    <p style="margin-bottom: 15px; font-weight: 600;">A digital classroom for:</p>
+                    <ul>
+                        <li>Professional development courses</li>
+                        <li>Workshops and webinars</li>
+                        <li>On-demand video lessons</li>
+                        <li>Downloadable toolkits and templates</li>
+                        <li>Certification badges for teachers, coordinators, and school leaders</li>
+                    </ul>
+                    <p style="margin-top: 15px;">Participants can track their progress and earn verified certificates
+                        issued digitally.</p>
+                </div>
+                <!-- 3 -->
+                <div class="digital-feature-card">
+                    <h3>3. Smart Registration & Management System</h3>
+                    <p style="margin-bottom: 15px; font-weight: 600;">For all programs:</p>
+                    <ul>
+                        <li>Competition entry</li>
+                        <li>Training enrollment</li>
+                        <li>Event ticketing</li>
+                        <li>Exhibitor and sponsor registration</li>
+                        <li>Ambassador school onboarding</li>
+                    </ul>
+                    <p style="margin-top: 15px;">Automated notifications ensure smooth communication and efficient
+                        workflow.</p>
+                </div>
+                <!-- 4 -->
+                <div class="digital-feature-card">
+                    <h3>4. Digital Credentialing & Certificates</h3>
+                    <p style="margin-bottom: 15px; font-weight: 600;">Eidikos issues:</p>
+                    <ul>
+                        <li>Digital certificates</li>
+                        <li>Achievement badges</li>
+                        <li>Participation transcripts</li>
+                    </ul>
+                    <p style="margin-top: 15px;">Each certificate contains a unique ID, making it verifiable and
+                        internationally recognized.</p>
+                </div>
+                <!-- 5 -->
+                <div class="digital-feature-card">
+                    <h3>5. Virtual Exhibitions & Trade Fairs</h3>
+                    <p style="margin-bottom: 15px; font-weight: 600;">Schools, universities, publishers, and education
+                        companies can:</p>
+                    <ul>
+                        <li>Host digital booths</li>
+                        <li>Share videos and brochures</li>
+                        <li>Engage with attendees</li>
+                        <li>Collect leads and inquiries</li>
+                    </ul>
+                    <p style="margin-top: 15px;">This expands exposure beyond physical events, enabling global
+                        participation.</p>
+                </div>
+                <!-- 6 -->
+                <div class="digital-feature-card">
+                    <h3>6. Leaderboards & Achievement Dashboards</h3>
+                    <p style="margin-bottom: 15px; font-weight: 600;">Students and schools can view:</p>
+                    <ul>
+                        <li>Competition rankings</li>
+                        <li>Performance analytics</li>
+                        <li>Achievement levels</li>
+                        <li>Country and region-based comparisons</li>
+                    </ul>
+                    <p style="margin-top: 15px;">This builds healthy competition and motivates continuous learning.</p>
+                </div>
+                <!-- 7 -->
+                <div class="digital-feature-card" style="grid-column: 1 / -1;">
+                    <h3>7. Partner & Ambassador Portals</h3>
+                    <p style="margin-bottom: 15px; font-weight: 600;">Schools and organizations will have:</p>
+                    <ul>
+                        <li>Exclusive dashboards</li>
+                        <li>Partnership benefits</li>
+                        <li>Access to resource libraries</li>
+                        <li>Priority event registration</li>
+                        <li>Sponsorship opportunities</li>
+                    </ul>
+                    <p style="margin-top: 15px;">A space for deeper collaboration and long-term engagement.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Coming Soon -->
+        <div class="app-box">
+            <i class="fas fa-rocket" style="font-size: 3rem; color: var(--secondary); margin-bottom: 20px;"></i>
+            <h3 style="margin-bottom: 20px;">🚀 COMING SOON: THE EIDIKOS APP</h3>
+            <p>A mobile version of the platform will soon offer:</p>
+            <div class="app-grid">
+                <div class="app-item"><i class="fas fa-bolt" style="color: var(--primary);"></i> Daily quizzes</div>
+                <div class="app-item"><i class="fas fa-gamepad" style="color: var(--primary);"></i> Vocabulary and math
+                    games</div>
+                <div class="app-item"><i class="fas fa-bullhorn" style="color: var(--primary);"></i> Event updates</div>
+                <div class="app-item"><i class="fas fa-chart-line" style="color: var(--primary);"></i> Personal learning
+                    progress tracking</div>
+                <div class="app-item"><i class="fas fa-bell" style="color: var(--primary);"></i> Notifications and
+                    reminders</div>
+            </div>
+            <p style="margin-top: 20px; font-weight: 700;">Designed to make learning accessible anytime, anywhere.</p>
+        </div>
+
+        <!-- Security -->
+        <div class="security-box">
+            <i class="fas fa-shield-alt" style="font-size: 3rem; color: var(--accent); margin-bottom: 20px;"></i>
+            <h3 style="margin-bottom: 20px;">🛡️ DATA SECURITY & COMPLIANCE</h3>
+            <p style="margin-bottom: 30px;">We prioritize:</p>
+            <div class="grid-3" style="text-align: left;">
+                <ul class="checklist">
+                    <li><i class="fas fa-user-shield"></i> Privacy protection</li>
+                    <li><i class="fas fa-credit-card"></i> Secure payment processing</li>
+                </ul>
+                <ul class="checklist">
+                    <li><i class="fas fa-lock"></i> Encrypted user data</li>
+                    <li><i class="fas fa-child"></i> Child safety protocols for minors</li>
+                </ul>
+                <ul class="checklist">
+                    <li><i class="fas fa-file-contract"></i> Compliance with UAE, EU (GDPR), and global standards</li>
+                </ul>
+            </div>
+            <p style="margin-top: 30px; font-size: 1.2rem; font-weight: 700;">Your trust is our commitment.</p>
+        </div>
+
+        <!-- Promise -->
+        <div class="promise-box" style="margin-top: 60px;">
+            <h3 style="margin-bottom: 20px;">🌈 THE EIDIKOS DIGITAL PROMISE</h3>
+            <p style="font-size: 1.3rem; color: var(--primary); margin-bottom: 10px;">Every learner. Every educator.
+                Every institution. One platform. Endless possibilities.</p>
+            <p>Our digital ecosystem ensures that excellence isn't limited by geography — it is accessible to all.</p>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

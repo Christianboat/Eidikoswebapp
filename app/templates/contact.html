@@ -1,0 +1,452 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us | Eidikos Global Events{% endblock %}
+{% block description %}Contact Eidikos Global Events - reach our Dubai headquarters, submit inquiries, or connect via
+email, phone, or social media.{% endblock %}
+
+{% block content %}
+<!-- MODERN CONTACT HERO -->
+<section class="contact-hero"
+    style="background: linear-gradient(135deg, var(--primary), var(--secondary)); padding: 120px 0 80px; color: white; position: relative; overflow: hidden;">
+    <div class="hero-overlay"
+        style="position: absolute; top:0; left:0; width: 100%; height: 100%; background: url('/static/img/pattern.svg'); opacity: 0.1;">
+    </div>
+    <div class="container" style="position: relative; z-index: 10;">
+        <nav aria-label="breadcrumb" style="margin-bottom: 20px;">
+            <ol class="breadcrumb"
+                style="background: transparent; padding: 0; font-size: 0.9rem; color: rgba(255,255,255,0.7);">
+                <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}" style="color: inherit;">Home</a></li>
+                <li class="breadcrumb-item active" style="color: white;">Contact</li>
+            </ol>
+        </nav>
+        <h1
+            style="font-size: 4rem; margin-bottom: 20px; font-family: 'Playfair Display', serif; font-weight: 800; letter-spacing: -1px;">
+            Let's Start a <span style="color: var(--gold);">Conversation</span>
+        </h1>
+        <p class="lead" style="font-size: 1.35rem; max-width: 700px; opacity: 0.9; line-height: 1.6;">
+            {{ page.hero_description if page and page.hero_description else "Whether you're looking to partner,
+            register, or simply learn more about Eidikos, our team is here to guide you every step of the way." }}
+        </p>
+    </div>
+</section>
+
+<section class="contact-content" style="padding: 100px 0; background: #fafafa;">
+    <div class="container">
+        <!-- TOP GRID: Main Form & Primary Details -->
+        <div class="row" style="display: flex; flex-wrap: wrap; gap: 50px; margin-bottom: 80px;">
+
+            <!-- LEFT COLUMN: The Form -->
+            <div class="col-lg-7" style="flex: 1.5; min-width: 320px;">
+                <div id="contact-status" class="contact-form-premium"
+                    style="background: white; padding: 50px; border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.03);">
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} animate-fade-in"
+                        style="padding: 20px; border-radius: 12px; margin-bottom: 30px; border: none; display: flex; align-items: center; gap: 15px; background: {% if category == 'success' %}#effaf5{% else %}#fff5f5{% endif %}; color: {% if category == 'success' %}#1b5e20{% else %}#c62828{% endif %}; border-left: 5px solid {% if category == 'success' %}#4caf50{% else %}#f44336{% endif %};">
+                        <i class="fas {% if category == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %}"
+                            style="font-size: 1.25rem;"></i>
+                        <span style="font-weight: 600;">{{ message }}</span>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+
+                    <div style="margin-bottom: 40px;">
+                        <h2
+                            style="color: var(--primary); font-family: 'Playfair Display', serif; font-weight: 700; margin-bottom: 10px;">
+                            Send a Message</h2>
+                        <p style="color: #666;">Fields marked with * are required. We typically respond within 24 hours.
+                        </p>
+                    </div>
+
+                    <form id="contactForm" method="POST" action="{{ url_for('main.contact') }}">
+                        <!-- Honeypot field (hidden from humans) -->
+                        <div style="display:none !important;" aria-hidden="true">
+                            <input type="text" name="website_field" tabindex="-1" autocomplete="off">
+                        </div>
+                        <!-- Hidden timestamp for bot detection -->
+                        <input type="hidden" name="form_timestamp" id="form-timestamp">
+                        <div class="form-row-grid"
+                            style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px;">
+                            <div class="form-group">
+                                <label
+                                    style="display: block; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 8px;">Full
+                                    Name *</label>
+                                <input type="text" name="name" class="modern-input" placeholder="Your Name" required>
+                            </div>
+                            <div class="form-group">
+                                <label
+                                    style="display: block; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 8px;">Email
+                                    Address *</label>
+                                <input type="email" name="email" class="modern-input" placeholder="name@company.com"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="form-row-grid"
+                            style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px;">
+                            <div class="form-group">
+                                <label
+                                    style="display: block; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 8px;">Phone
+                                    Number</label>
+                                <input type="tel" name="phone" class="modern-input" placeholder="+X-XXX-XXXXXXX">
+                            </div>
+                            <div class="form-group">
+                                <label
+                                    style="display: block; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 8px;">Organization</label>
+                                <input type="text" name="organization" class="modern-input"
+                                    placeholder="Company or School Name">
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 25px;">
+                            <label
+                                style="display: block; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 8px;">Inquiry
+                                Type *</label>
+                            <select name="inquiry_type" class="modern-input"
+                                style="appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23AAA%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.4c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095.3c3.6-3.6%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 1.2rem center; background-size: 0.8rem auto;"
+                                required>
+                                {% if inquiry_types %}
+                                {% for type in inquiry_types %}
+                                <option value="{{ type.id }}" {% if selected_type_id==type.id or (selected_type_val and
+                                    selected_type_val.lower() in type.name.lower()) %}selected{% endif %}>
+                                    {{ type.name }}
+                                </option>
+                                {% endfor %}
+                                {% else %}
+                                <option value="General Inquiry">General Inquiry</option>
+                                {% endif %}
+                            </select>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 40px;">
+                            <label
+                                style="display: block; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 8px;">Your
+                                Message</label>
+                            <textarea name="message" class="modern-input" rows="5" style="resize: none;"
+                                placeholder="Tell us more about how we can help...">{% if selected_program %}I am interested in registering for the {{ selected_program }} program. Please provide more details on next steps.{% endif %}</textarea>
+                        </div>
+
+                        <button type="submit" class="premium-submit-btn">
+                            <span class="btn-text">Submit Inquiry</span>
+                            <span class="btn-icon"><i class="fas fa-arrow-right"></i></span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: Contact Info Cards -->
+            <div class="col-lg-5" style="flex: 1; min-width: 320px; display: flex; flex-direction: column; gap: 30px;">
+
+                <!-- HEADQUARTERS CARD -->
+                <div class="info-card-premium">
+                    <div class="card-icon"><i class="fas fa-building"></i></div>
+                    <div class="card-body">
+                        <h3>Global Headquarters</h3>
+                        <p class="address">{{ contact_info.address if contact_info else 'Dubai, United Arab Emirates' }}
+                        </p>
+                        <div class="contact-links">
+                            <a href="mailto:{{ contact_info.email if contact_info else 'info@eidikosglobal.com' }}"><i
+                                    class="fas fa-envelope"></i> {{ contact_info.email if contact_info else
+                                'info@eidikosglobal.com' }}</a>
+                            <a href="tel:{{ contact_info.phone if contact_info else '+971XXXXXXX' }}"><i
+                                    class="fas fa-phone-alt"></i> {{ contact_info.phone if contact_info else '+971 (0)
+                                XX XXX XXXX' }}</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HOURS CARD -->
+                <div class="info-card-premium">
+                    <div class="card-icon" style="background: #e3f2fd; color: #1976d2;"><i class="fas fa-clock"></i>
+                    </div>
+                    <div class="card-body">
+                        <h3>Business Hours</h3>
+                        <div class="hours-content" style="color: #555; line-height: 1.6;">
+                            {{ contact_info.hours | safe if contact_info and contact_info.hours else 'Monday - Friday:
+                            09:00 - 18:00 (GST)<br>Saturday - Sunday: Closed' }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SOCIALS CARD -->
+                <div class="info-card-premium">
+                    <div class="card-icon" style="background: #fdf2e9; color: var(--accent);"><i
+                            class="fas fa-hashtag"></i></div>
+                    <div class="card-body">
+                        <h3>Connect With Us</h3>
+                        <p style="color: #777; font-size: 0.95rem; margin-bottom: 15px;">Join our community online for
+                            latest updates and highlights.</p>
+                        <div class="social-circles">
+                            {% if social_media %}
+                            {% for social in social_media %}
+                            <a href="{{ social.url }}" title="{{ social.platform }}"><i
+                                    class="{{ social.icon_class }}"></i></a>
+                            {% endfor %}
+                            {% else %}
+                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-youtube"></i></a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DEPARTMENT ROW: Modern Small Cards -->
+        <div style="margin-bottom: 80px;">
+            <div style="text-align: center; margin-bottom: 50px;">
+                <h2 style="font-family: 'Playfair Display', serif; color: var(--primary); font-size: 2.5rem;">Specific
+                    Inquiries</h2>
+                <p style="color: #666; max-width: 600px; margin: 15px auto 0;">Reach out directly to our specialized
+                    departments for faster assistance.</p>
+            </div>
+
+            <div class="grid-3" style="gap: 30px;">
+                <div class="dept-card">
+                    <div class="dept-icon"><i class="fas fa-handshake"></i></div>
+                    <h4>Partnerships</h4>
+                    <a href="mailto:partnerships@eidikosglobal.com">partnerships@eidikosglobal.com</a>
+                </div>
+                <div class="dept-card">
+                    <div class="dept-icon"><i class="fas fa-trophy"></i></div>
+                    <h4>Competitions</h4>
+                    <a href="mailto:competitions@eidikosglobal.com">competitions@eidikosglobal.com</a>
+                </div>
+                <div class="dept-card">
+                    <div class="dept-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <h4>Training</h4>
+                    <a href="mailto:training@eidikosglobal.com">training@eidikosglobal.com</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ASSURANCE SECTION -->
+        <div class="premium-assurance"
+            style="background: white; padding: 60px; border-radius: 30px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02); position: relative; overflow: hidden;">
+            <div style="position: absolute; top: 0; left: 0; width: 6px; height: 100%; background: var(--gold);"></div>
+            <h3
+                style="font-family: 'Playfair Display', serif; color: var(--primary); font-size: 2.2rem; margin-bottom: 20px;">
+                The Eidikos Assurance</h3>
+            <p style="font-size: 1.2rem; color: #555; max-width: 800px; margin: 0 auto; line-height: 1.8;">
+                Every interaction matters. We are committed to responding with the care, clarity, and professionalism
+                that defines our global community.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- STYLES -->
+<style>
+    .modern-input {
+        width: 100%;
+        padding: 16px 20px;
+        border: 2px solid #edeff2;
+        border-radius: 12px;
+        font-size: 1rem;
+        color: #333;
+        transition: all 0.3s ease;
+        background: #fcfcfc;
+    }
+
+    .modern-input:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: white;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .premium-submit-btn {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 18px 40px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        width: 100%;
+    }
+
+    .premium-submit-btn:hover {
+        background: var(--secondary);
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(var(--primary-rgb), 0.3);
+    }
+
+    .premium-submit-btn:active {
+        transform: translateY(-1px);
+    }
+
+    .info-card-premium {
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        display: flex;
+        gap: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+        border: 1px solid rgba(0, 0, 0, 0.03);
+        transition: all 0.3s ease;
+    }
+
+    .info-card-premium:hover {
+        transform: translateX(10px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+        border-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .card-icon {
+        width: 60px;
+        height: 60px;
+        background: #f0f7f4;
+        color: #2e7d32;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .card-body h3 {
+        font-size: 1.25rem;
+        margin-bottom: 10px;
+        color: var(--primary);
+        font-weight: 700;
+    }
+
+    .card-body .address {
+        color: #666;
+        line-height: 1.5;
+        margin-bottom: 15px;
+    }
+
+    .contact-links {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .contact-links a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.95rem;
+    }
+
+    .contact-links a i {
+        color: var(--gold);
+        font-size: 0.8rem;
+    }
+
+    .social-circles {
+        display: flex;
+        gap: 12px;
+    }
+
+    .social-circles a {
+        width: 40px;
+        height: 40px;
+        background: #f5f5f5;
+        color: #555;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .social-circles a:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateY(-5px);
+    }
+
+    .dept-card {
+        background: white;
+        padding: 40px 30px;
+        border-radius: 20px;
+        text-align: center;
+        border: 1px solid rgba(0, 0, 0, 0.03);
+        transition: all 0.3s ease;
+    }
+
+    .dept-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+    }
+
+    .dept-icon {
+        width: 50px;
+        height: 50px;
+        margin: 0 auto 20px;
+        background: var(--light-bg);
+        color: var(--gold);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+    }
+
+    .dept-card h4 {
+        margin-bottom: 15px;
+        color: var(--primary);
+        font-weight: 700;
+    }
+
+    .dept-card a {
+        color: #777;
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+
+    .dept-card a:hover {
+        color: var(--accent);
+        text-decoration: underline;
+    }
+
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-fade-in {
+        animation: fade-in 0.6s ease forwards;
+    }
+
+    @media (max-width: 768px) {
+        .contact-hero h1 {
+            font-size: 2.8rem !important;
+        }
+
+        .form-row-grid {
+            grid-template-columns: 1fr !important;
+        }
+
+        .contact-form-premium {
+            padding: 30px !important;
+        }
+    }
+</style>
+{% endblock %}

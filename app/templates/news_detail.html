@@ -1,0 +1,412 @@
+{% extends "base.html" %}
+
+{% block title %}{{ article.title }} | Eidikos News{% endblock %}
+{% block description %}{{ article.excerpt if article.excerpt else article.content|striptags|truncate(160) }}{% endblock
+%}
+
+{% block content %}
+<!-- POST HEADER / HERO -->
+<section class="news-hero"
+    style="position: relative; background: var(--primary); padding: 120px 0 80px; color: white; overflow: hidden;">
+    <!-- Background overlay if image exists -->
+    {% if article.image_filename or article.featured_image_url %}
+    <div class="hero-bg"
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.15; background-image: url('{{ url_for('static', filename='uploads/news/' + article.image_filename) if article.image_filename else article.featured_image_url }}'); background-size: cover; background-position: center;">
+    </div>
+    {% endif %}
+
+    <div class="container" style="position: relative; z-index: 2;">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2 text-center">
+                <div
+                    style="display: inline-block; background: var(--accent); color: var(--primary); padding: 5px 15px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; margin-bottom: 20px; text-transform: uppercase;">
+                    {{ article.category }}
+                </div>
+                <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 20px; line-height: 1.2;">{{ article.title
+                    }}</h1>
+                <div style="font-size: 1.1rem; opacity: 0.9;">
+                    <i class="far fa-calendar-alt me-2"></i> {{ article.date_published.strftime('%B %d, %Y') if
+                    article.date_published else '' }}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<section style="background: white; padding: 60px 0;">
+    <div class="container">
+        <div class="row">
+            <!-- ARTICLE BODY -->
+            <div class="col-lg-8">
+                <!-- Featured Image in Content -->
+                {% if article.image_filename or article.featured_image_url %}
+                <div class="article-featured-image"
+                    style="margin-bottom: 40px; border-radius: 20px; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.1);">
+                    <img src="{{ url_for('static', filename='uploads/news/' + article.image_filename) if article.image_filename else article.featured_image_url }}"
+                        alt="{{ article.title }}"
+                        style="width: 100%; height: auto; max-height: 500px; object-fit: cover; display: block;">
+                </div>
+                {% endif %}
+
+                <!-- Content with Drop Cap and better typography -->
+                <div class="article-content" style="font-size: 1.15rem; line-height: 1.8; color: #2c3e50;">
+                    {{ article.content | safe }}
+                </div>
+
+                <!-- Tags / Share -->
+                <div class="article-footer" style="margin-top: 60px; padding-top: 30px; border-top: 1px solid #eee;">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                        <a href="{{ url_for('main.news_impact') }}" class="btn-back">
+                            <i class="fas fa-arrow-left"></i>
+                            <span>Back to News</span>
+                        </a>
+
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fw-bold me-2">Share:</span>
+                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.url|urlencode }}"
+                                target="_blank" class="share-btn fb" title="Share on Facebook">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="https://twitter.com/intent/tweet?text={{ article.title|urlencode }}&url={{ request.url|urlencode }}"
+                                target="_blank" class="share-btn tw" title="Share on Twitter">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.url|urlencode }}"
+                                target="_blank" class="share-btn ln" title="Share on LinkedIn">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            <button class="share-btn copy" title="Copy Link" id="copy-link-btn">
+                                <i class="fas fa-link"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    document.getElementById('copy-link-btn').addEventListener('click', function () {
+                        const url = window.location.href;
+                        navigator.clipboard.writeText(url).then(() => {
+                            const icon = this.querySelector('i');
+                            const originalClass = icon.className;
+                            icon.className = 'fas fa-check text-success';
+                            setTimeout(() => {
+                                icon.className = originalClass;
+                            }, 2000);
+                        }).catch(err => {
+                            console.error('Failed to copy: ', err);
+                        });
+                    });
+                </script>
+            </div>
+
+            <!-- SIDEBAR -->
+            <div class="col-lg-4 ps-lg-5">
+                <div style="position: sticky; top: 100px;">
+
+                    <!-- Search Widget -->
+                    <!-- <div class="widget mb-5">
+                        <h4 style="font-size: 1.2rem; border-bottom: 2px solid var(--accent); padding-bottom: 10px; margin-bottom: 20px; display: inline-block;">Search</h4>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search news...">
+                            <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+                        </div>
+                    </div> -->
+
+                    <!-- Latest News Widget -->
+                    <div class="widget mb-5">
+                        <h4
+                            style="font-size: 1.2rem; color: var(--primary); font-weight: 700; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid rgba(0,0,0,0.05);">
+                            More News</h4>
+
+                        <!-- We need to fetch 'latest_news' in the route for this to work properly, or standard variable. 
+                             Assuming 'latest_news' or similar is passed, or we can use a custom query if context processor allows.
+                             For now, hardcoded or empty unless we update route. -->
+
+                        <!-- Placeholder sidebar items if no data variable yet -->
+                        <div class="sidebar-news-list">
+                            {% if recent_articles %}
+                            {% for news in recent_articles %}
+                            <div class="sidebar-news-item">
+                                <div class="item-date">{{ news.date_published.strftime('%b %d, %Y') if
+                                    news.date_published else '' }}</div>
+                                <a href="{{ url_for('main.news_detail', article_id=news.id) }}" class="item-title">
+                                    {{ news.title }}
+                                </a>
+                            </div>
+                            {% endfor %}
+                            {% else %}
+                            <p class="text-muted small">Check back for more updates from Eidikos.</p>
+                            {% endif %}
+                        </div>
+
+                        <a href="{{ url_for('main.news_impact') }}"
+                            class="btn btn-link px-0 text-decoration-none fw-bold" style="color: var(--secondary);">View
+                            All News <i class="fas fa-arrow-right ms-1"></i></a>
+                    </div>
+
+                    <!-- Categories Widget -->
+                    <div class="widget p-4 rounded-4" style="background: var(--light-bg); border: 1px solid #eee;">
+                        <h4 style="font-size: 1.1rem; margin-bottom: 20px; color: var(--primary); font-weight: 700;">
+                            Categories</h4>
+                        <ul class="category-list">
+                            {% if categories %}
+                            {% for cat in categories %}
+                            <li>
+                                <a href="{{ url_for('main.news_impact') }}">
+                                    <span class="cat-name"><i class="fas fa-chevron-right me-2"></i>{{ cat.name
+                                        }}</span>
+                                    <span class="cat-count">{{ cat.count }}</span>
+                                </a>
+                            </li>
+                            {% endfor %}
+                            {% else %}
+                            <p class="text-muted small px-3">Discover our updates.</p>
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- More Stories Section -->
+{% if recent_articles %}
+<section style="background: var(--light-bg); padding: 80px 0;">
+    <div class="container">
+        <h3 class="mb-4 text-center">More Stories</h3>
+        <div class="row">
+            {% for related in recent_articles %}
+            <div class="col-md-4 mb-4">
+                <a href="{{ url_for('main.news_detail', article_id=related.id) }}" class="text-decoration-none">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden"
+                        style="transition: transform 0.3s; background: white;">
+                        {% if related.image_filename %}
+                        <img src="{{ url_for('static', filename='uploads/news/' + related.image_filename) }}"
+                            class="card-img-top" alt="{{ related.title }}" style="height: 200px; object-fit: cover;">
+                        {% elif related.featured_image_url %}
+                        <img src="{{ related.featured_image_url }}" class="card-img-top" alt="{{ related.title }}"
+                            style="height: 200px; object-fit: cover;">
+                        {% else %}
+                        <div
+                            style="height: 200px; background: #eee; display: flex; align-items: center; justify-content: center; color: var(--primary); opacity: 0.5;">
+                            <i class="fas fa-newspaper fa-3x"></i>
+                        </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <div
+                                style="font-size: 0.8rem; text-transform: uppercase; color: var(--secondary); font-weight: 700; margin-bottom: 10px;">
+                                {{ related.category }}</div>
+                            <h5 class="card-title text-dark fw-bold" style="font-size: 1.1rem; line-height: 1.4;">{{
+                                related.title|truncate(60) }}</h5>
+                            <p class="card-text text-muted small">{{ related.excerpt|truncate(80) if related.excerpt
+                                else related.content|striptags|truncate(80) }}</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+<style>
+    /* --- Improved Component Styles --- */
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 25px;
+        background: white;
+        color: var(--primary);
+        border: 2px solid var(--primary);
+        border-radius: 50px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-back:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateX(-5px);
+        box-shadow: 0 8px 25px rgba(0, 46, 93, 0.2);
+    }
+
+    .share-btn {
+        width: 40px;
+        height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #f8f9fa;
+        color: #6c757d;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        text-decoration: none;
+    }
+
+    .share-btn:hover {
+        transform: scale(1.15) translateY(-3px);
+        color: white;
+    }
+
+    .share-btn.fb:hover {
+        background: #3b5998;
+    }
+
+    .share-btn.tw:hover {
+        background: #1da1f2;
+    }
+
+    .share-btn.ln:hover {
+        background: #0077b5;
+    }
+
+    .share-btn.copy:hover {
+        background: var(--secondary);
+    }
+
+    .sidebar-news-item {
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .sidebar-news-item:last-child {
+        border-bottom: none;
+    }
+
+    .sidebar-news-item .item-date {
+        font-size: 0.8rem;
+        color: var(--secondary);
+        font-weight: 600;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .sidebar-news-item .item-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--primary);
+        line-height: 1.4;
+        text-decoration: none;
+        display: block;
+        transition: color 0.3s ease;
+    }
+
+    .sidebar-news-item:hover .item-title {
+        color: var(--secondary);
+    }
+
+    .category-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .category-list li {
+        margin-bottom: 12px;
+    }
+
+    .category-list li:last-child {
+        margin-bottom: 0;
+    }
+
+    .category-list a {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 15px;
+        background: white;
+        border-radius: 12px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+    }
+
+    .category-list a:hover {
+        background: rgba(0, 168, 204, 0.05);
+        border-color: var(--secondary);
+        transform: translateX(5px);
+    }
+
+    .category-list .cat-name {
+        color: #4a5568;
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
+    .category-list .cat-count {
+        background: var(--light-bg);
+        color: var(--primary);
+        font-size: 0.8rem;
+        font-weight: 700;
+        padding: 2px 10px;
+        border-radius: 20px;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .category-list a:hover .cat-name {
+        color: var(--primary);
+    }
+
+    .category-list a:hover .cat-count {
+        background: var(--secondary);
+        color: white;
+    }
+
+    .article-content p {
+        margin-bottom: 1.5rem;
+    }
+
+    .article-content h2 {
+        font-size: 1.8rem;
+        color: var(--primary);
+        margin-top: 2.5rem;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+    }
+
+    .article-content h3 {
+        font-size: 1.5rem;
+        color: var(--primary);
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .article-content ul,
+    .article-content ol {
+        margin-bottom: 1.5rem;
+        padding-left: 2rem;
+    }
+
+    .article-content li {
+        margin-bottom: 0.5rem;
+    }
+
+    .article-content blockquote {
+        border-left: 4px solid var(--accent);
+        padding-left: 20px;
+        font-style: italic;
+        color: #555;
+        font-size: 1.25rem;
+        margin: 2rem 0;
+        background: var(--light-bg);
+        padding: 30px;
+        border-radius: 0 20px 20px 0;
+    }
+
+    .article-content img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+        margin: 20px 0;
+    }
+</style>
+{% endblock %}

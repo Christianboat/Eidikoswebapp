@@ -1,0 +1,152 @@
+{% extends "admin/base.html" %}
+{% import "admin/_macros.html" as macros %}
+
+{% block page_title %}{{ legend }}{% endblock %}
+
+{% block content %}
+<div class="section-editor">
+    <div class="editor-header">
+        <h3><i class="fas fa-star text-warning"></i> {{ legend }}</h3>
+        <p class="text-muted">Manage highlights shown in the flagship section of the Home Page.</p>
+    </div>
+
+    <div class="editor-content">
+        <form method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+
+            <div class="row">
+                <div class="col-md-7">
+                    {{ macros.render_field(form.name) }}
+                    {{ macros.render_field(form.slug) }}
+                    {{ macros.render_field(form.type) }}
+                    {{ macros.render_field(form.excerpt, rows=2) }}
+                    <div id="excerpt-counter" class="text-end small text-muted mt-1">0 / 250</div>
+                    {{ macros.render_field(form.description, rows=4) }}
+                </div>
+                <div class="col-md-5">
+                    <div class="card bg-light border-0 mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary"><i class="fas fa-icons"></i> Visuals</h5>
+                            <p class="small text-muted">You can provide either an icon OR an image.</p>
+                            {{ macros.render_field(form.icon) }}
+                            <div class="mb-3">
+                                {{ form.image.label(class="form-label") }}
+                                {{ form.image(class="form-control") }}
+                                <div class="form-text">Recommended: 400x300px aspect ratio.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card bg-light border-0 mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title text-success"><i class="fas fa-link"></i> Call to Action</h5>
+                            {{ macros.render_field(form.cta_url) }}
+                            {{ macros.render_field(form.cta_text) }}
+                            {{ macros.render_field(form.order) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                // Auto-slug generation
+                const nameInput = document.getElementById('name');
+                const slugInput = document.getElementById('slug');
+
+                if (nameInput && slugInput) {
+                    nameInput.addEventListener('input', function () {
+                        if (!slugInput.value || slugInput.getAttribute('data-auto') === 'true') {
+                            const slug = nameInput.value
+                                .toLowerCase()
+                                .replace(/[^\w\s-]/g, '')
+                                .replace(/[\s_-]+/g, '-')
+                                .replace(/^-+|-+$/g, '');
+                            slugInput.value = slug;
+                            slugInput.setAttribute('data-auto', 'true');
+                        }
+                    });
+
+                    slugInput.addEventListener('input', function () {
+                        slugInput.setAttribute('data-auto', 'false');
+                    });
+                }
+
+                // Excerpt char counter
+                const excerpt = document.getElementById('excerpt');
+                const counter = document.getElementById('excerpt-counter');
+
+                if (excerpt && counter) {
+                    function updateCounter() {
+                        const length = excerpt.value.length;
+                        counter.innerText = `${length} / 250`;
+                        if (length > 250) {
+                            counter.classList.add('text-danger');
+                        } else {
+                            counter.classList.remove('text-danger');
+                        }
+                    }
+
+                    excerpt.addEventListener('input', updateCounter);
+                    updateCounter();
+                }
+            </script>
+
+            {% if flagship and flagship.id %}
+            <div class="mt-5 pt-4 border-top">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4><i class="fas fa-list-ul"></i> Flagship Details / Modules</h4>
+                    <a href="{{ url_for('admin.create_program_subcontent', flagship_id=flagship.id) }}"
+                        class="btn btn-sm btn-success">
+                        <i class="fas fa-plus"></i> Add Sub-Item
+                    </a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover border">
+                        <thead class="table-light">
+                            <tr>
+                                <th width="60">Order</th>
+                                <th>Title</th>
+                                <th>Details</th>
+                                <th width="100">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sub in subcontents %}
+                            <tr>
+                                <td>{{ sub.order }}</td>
+                                <td><strong>{{ sub.title or 'Items List' }}</strong></td>
+                                <td>
+                                    <small class="text-muted">{{ sub.content[:50] }}...</small>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ url_for('admin.edit_program_subcontent', id=sub.id) }}"
+                                            class="btn btn-link py-0">Edit</a>
+                                        <form action="{{ url_for('admin.delete_program_subcontent', id=sub.id) }}"
+                                            method="POST" class="d-inline"
+                                            onsubmit="return confirm('Delete this item?');">
+                                            <button type="submit" class="btn btn-link text-danger py-0">Remove</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center py-3 text-muted">No details added yet. These will
+                                    appear on the program detail page.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="d-flex gap-2 mt-4 pt-4 border-top">
+                {{ form.submit(class="btn btn-primary px-4") }}
+                <a href="{{ url_for('admin.list_flagships') }}" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

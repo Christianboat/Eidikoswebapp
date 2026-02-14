@@ -1,0 +1,302 @@
+{% extends "base.html" %}
+
+{% block title %}Programs & Services | Eidikos Global Events{% endblock %}
+{% block description %}Explore Eidikos' 360° educational ecosystem: youth competitions, professional development,
+awards, trade fairs, and custom programs.{% endblock %}
+
+{% block content %}
+<!-- DETAILED PROGRAMS (Full Content) -->
+<section id="programs-detailed" style="background: var(--light-bg);">
+    <div class="container">
+        <div class="section-header">
+            <p style="color: var(--secondary); font-weight: 700; text-transform: uppercase;">Programs & Services</p>
+            <h2>{{ page.hero_title|safe if page and page.hero_title else 'A 360° Educational and Professional
+                Development Ecosystem' }}</h2>
+            {% if sections and sections.intro %}
+            {{ sections.intro.content | safe }}
+            {% else %}
+            <p>At Eidikos Global Events LLC, we believe that excellence thrives when people are given platforms to
+                learn, compete, innovate, network, and grow.</p>
+            <p>Our programs are designed for students, educators, school leaders, institutions, and professionals,
+                ensuring that every stage of education and career development is supported.</p>
+            <p style="margin-top: 20px;"><strong>Below is an overview of our core offerings:</strong></p>
+            {% endif %}
+        </div>
+
+        <!-- NEW 6-TAB NAVIGATION -->
+        <div class="tabs-nav">
+            <button class="tab-btn active" data-tab="youth-tab">Youth Competitions</button>
+            <button class="tab-btn" data-tab="prodev-tab">Professional Dev</button>
+            <button class="tab-btn" data-tab="awards-tab">Awards</button>
+            <button class="tab-btn" data-tab="fairs-tab">Trade Fairs</button>
+            <button class="tab-btn" data-tab="services-tab">360° Services</button>
+            <button class="tab-btn" data-tab="custom-tab">Custom Design</button>
+        </div>
+
+        <!-- 1. YOUTH COMPETITIONS -->
+        <div id="youth-tab" class="tab-content active">
+            <div style="margin-bottom: 30px;">
+                <h3>YOUTH COMPETITIONS & EDUCATIONAL EVENTS</h3>
+                <p><strong>Where talent is discovered and celebrated.</strong></p>
+                <p>Our youth events are designed to spark curiosity, build confidence, and develop critical thinking and
+                    communication skills. These competitions bring together students from diverse backgrounds, promoting
+                    global exposure and community-building.</p>
+            </div>
+            <div class="grid-3">
+                {% for program in programs if program.category == 'youth_competitions' %}
+                <div class="flagship-card">
+                    {% if program.image_filename %}
+                    <img src="{{ url_for('static', filename='uploads/programs/' + program.image_filename) }}"
+                        alt="{{ program.name|safe }}" class="card-img"
+                        style="width:100%; height:120px; object-fit:contain; background-color: white; border-radius:8px; margin-bottom:10px; padding: 10px; border: 1px solid #eee;">
+                    {% elif program.icon %}
+                    <i class="{{ program.icon }}"
+                        style="font-size: 2rem; color: var(--secondary); margin-bottom: 15px; display: block;"></i>
+                    {% endif %}
+                    <h4 style="margin-bottom: 15px;">{{ program.name|safe }}</h4>
+                    <p style="color: #666; line-height: 1.6; margin-bottom: 20px;">
+                        {{ program.excerpt if program.excerpt else (program.description[:150] + '...' if
+                        program.description and program.description|length > 150 else program.description)|safe }}
+                    </p>
+                    <a href="{{ program.detail_url }}" class="btn-text-link"
+                        style="display: inline-block; margin-top: auto;">
+                        Learn More <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+    <div class="container">
+        <!-- 2. PROFESSIONAL DEVELOPMENT -->
+        <div id="prodev-tab" class="tab-content">
+            {% set pro_dev_programs = programs|selectattr('category', 'equalto', 'professional_dev')|list %}
+            {% if pro_dev_programs %}
+            {% for program in pro_dev_programs %}
+            <div style="margin-bottom: 30px;">
+                <h3>{{ program.name|upper }}</h3>
+                <p><strong>{{ program.description|safe }}</strong></p>
+            </div>
+            <div class="pro-dev-grid">
+                {% for sub in program.subcontents.order_by(ProgramSubContent.order.asc()) %}
+                {% if "includes" not in sub.title|lower %}
+                <div class="tab-sub-section">
+                    <h4><i class="fas fa-chevron-circle-right" style="color: var(--primary); margin-right: 10px;"></i>
+                        {{ sub.title }}:</h4>
+                    {% if '<' in sub.content and '>' in sub.content %} <div class="rich-text-content">{{
+                        sub.content|safe
+                        }}
+                </div>
+                {% else %}
+                <ul class="impact-list">
+                    {% for item in sub.content.split('\n') %}
+                    {% if item.strip() %}
+                    <li>{{ item.strip() }}</li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+
+        {% for sub in program.subcontents if "includes" in sub.title|lower %}
+        <div
+            style="margin-top: 30px; background: white; padding: 25px; border-radius: 15px; border-left: 4px solid var(--accent);">
+            <h4 style="margin-bottom: 15px;">{{ sub.title }}</h4>
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                <ul class="checklist">
+                    {% for item in sub.content.split('\n') %}
+                    {% if item.strip() %}
+                    <li><i class="fas fa-check-circle"></i> {{ item.strip() }}</li>
+                    {% if loop.index is divisibleby 2 and not loop.last %}
+                </ul>
+                <ul class="checklist">{% endif %}
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endfor %}
+        {% endfor %}
+        {% else %}
+        <div class="text-center py-5">
+            <p class="text-muted">Professional Development programs coming soon.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- 3. AWARDS -->
+    <div id="awards-tab" class="tab-content">
+        <div style="margin-bottom: 30px;">
+            <h3>AWARDS & RECOGNITION PROGRAMS</h3>
+            <p><strong>Celebrating excellence in education, leadership, innovation, and community impact.</strong>
+            </p>
+            <p>Eidikos believes that outstanding work should be recognized and celebrated. Our awards programs
+                shine
+                a spotlight on individuals and institutions shaping the future.</p>
+        </div>
+        <div class="grid-2">
+            {% for program in programs if program.category == 'awards' %}
+            <div class="flagship-card">
+                {% if program.image_filename %}
+                <img src="{{ url_for('static', filename='uploads/programs/' + program.image_filename) }}"
+                    alt="{{ program.name|safe }}" class="card-img"
+                    style="width:100%; height:120px; object-fit:contain; background-color: white; border-radius:8px; margin-bottom:10px; padding: 10px; border: 1px solid #eee;">
+                {% elif program.icon %}
+                <i class="{{ program.icon }}"
+                    style="font-size: 2rem; color: var(--secondary); margin-bottom: 15px; display: block;"></i>
+                {% endif %}
+                <h4 style="margin-bottom: 15px;">{{ program.name|safe }}</h4>
+                <p style="color: #666; line-height: 1.6; margin-bottom: 20px;">
+                    {{ program.excerpt if program.excerpt else (program.description[:150] + '...' if
+                    program.description
+                    and program.description|length > 150 else program.description)|safe }}
+                </p>
+                <a href="{{ program.detail_url }}" class="btn-text-link"
+                    style="display: inline-block; margin-top: auto;">
+                    Learn More <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        <p style="margin-top: 30px; font-style: italic; text-align: center;">These awards build aspiration and
+            foster a culture of appreciation, excellence, and continuous improvement.</p>
+    </div>
+
+    <!-- 4. TRADE FAIRS -->
+    <div id="fairs-tab" class="tab-content">
+        <div style="margin-bottom: 30px;">
+            <h3>EDUCATION TRADE FAIRS & EXPOS</h3>
+            <p><strong>Connecting education stakeholders, innovators, and partners.</strong></p>
+            <p>Eidikos organizes exhibitions that bring together schools, universities, edtech companies,
+                publishers, service providers, and parents.</p>
+        </div>
+        <div style="margin-bottom: 30px;">
+            <h4 style="margin-bottom: 20px;">Key Events:</h4>
+            <div class="grid-3">
+                {% for program in programs if program.category == 'trade_fairs' %}
+                <div class="flagship-card">
+                    {% if program.image_filename %}
+                    <img src="{{ url_for('static', filename='uploads/programs/' + program.image_filename) }}"
+                        alt="{{ program.name|safe }}" class="card-img"
+                        style="width:100%; height:120px; object-fit:contain; background-color: white; border-radius:8px; margin-bottom:10px; padding: 10px; border: 1px solid #eee;">
+                    {% elif program.icon %}
+                    <i class="{{ program.icon }}"
+                        style="font-size: 2rem; color: var(--secondary); margin-bottom: 15px; display: block;"></i>
+                    {% endif %}
+                    <h4 style="margin-bottom: 15px;">{{ program.name|safe }}</h4>
+                    <p style="color: #666; line-height: 1.6; margin-bottom: 20px;">
+                        {{ program.excerpt if program.excerpt else (program.description[:150] + '...' if
+                        program.description and program.description|length > 150 else program.description)|safe
+                        }}
+                    </p>
+                    <a href="{{ program.detail_url }}" class="btn-text-link"
+                        style="display: inline-block; margin-top: auto;">
+                        Learn More <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <p style="background: white; padding: 20px; border-radius: 10px; text-align: center;">These platforms
+            enhance visibility, partnership opportunities, and community engagement across the educational
+            ecosystem.</p>
+    </div>
+
+    <!-- 5. 360 SERVICES -->
+    <div id="services-tab" class="tab-content">
+        {% set services_programs = programs|selectattr('category', 'equalto', 'services')|list %}
+        {% if services_programs %}
+        {% for program in services_programs %}
+        <div style="margin-bottom: 30px;">
+            <h3>{{ program.name|upper }}</h3>
+            <p><strong>{{ program.description|safe }}</strong></p>
+        </div>
+        <div style="margin-bottom: 20px;">
+            {% for sub in program.subcontents.order_by(ProgramSubContent.order.asc()) %}
+            <h4 style="margin-bottom: 15px;">{{ sub.title }}</h4>
+            <div class="pro-dev-grid">
+                {% if '<' in sub.content and '>' in sub.content %} <div class="rich-text-content">{{
+                    sub.content|safe }}
+            </div>
+            {% else %}
+            <ul class="impact-list">
+                {% for item in sub.content.split('\n') %}
+                {% if item.strip() %}
+                <li>{{ item.strip() }}</li>
+                {% if loop.index is divisibleby 4 and not loop.last %}
+            </ul>
+            <ul class="impact-list">{% endif %}
+                {% endif %}
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="text-center py-5">
+        <p class="text-muted">360° Educational Services coming soon.</p>
+    </div>
+    {% endif %}
+    </div>
+
+    <!-- 6. CUSTOM PROGRAM DESIGN -->
+    <div id="custom-tab" class="tab-content">
+        <div style="margin-bottom: 30px;">
+            <h3>CUSTOM PROGRAM DESIGN</h3>
+            <p><strong>Tailored solutions for schools, corporations, and development partners.</strong></p>
+            <p>Eidikos can design customized:</p>
+        </div>
+        <div class="grid-3" style="margin-bottom: 30px;">
+            {% for program in programs if program.category == 'custom_design' %}
+            <div class="flagship-card">
+                {% if program.image_filename %}
+                <img src="{{ url_for('static', filename='uploads/programs/' + program.image_filename) }}"
+                    alt="{{ program.name|safe }}" class="card-img"
+                    style="width:100%; height:120px; object-fit:contain; background-color: white; border-radius:8px; margin-bottom:10px; padding: 10px; border: 1px solid #eee;">
+                {% elif program.icon %}
+                <i class="{{ program.icon }}"
+                    style="font-size: 2rem; color: var(--secondary); margin-bottom: 15px; display: block;"></i>
+                {% endif %}
+                <h4 style="margin-bottom: 15px;">{{ program.name|safe }}</h4>
+                <p style="color: #666; line-height: 1.6; margin-bottom: 20px;">
+                    {{ program.excerpt if program.excerpt else (program.description[:150] + '...' if
+                    program.description
+                    and program.description|length > 150 else program.description)|safe }}
+                </p>
+                <a href="{{ program.detail_url }}" class="btn-text-link"
+                    style="display: inline-block; margin-top: auto;">
+                    Learn More <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        <p style="text-align: center; font-weight: 700; color: var(--primary);">We collaborate with schools, NGOs,
+            corporate CSR programs, education ministries, and embassies.</p>
+    </div>
+    </div>
+    </div>
+
+    <!-- PROMISE OUTRO -->
+    <div class="container" style="margin-top: 60px;">
+        <div
+            style="background: var(--primary); color: white; padding: 60px 40px; border-radius: 30px; text-align: center;">
+            <h3 style="color: var(--accent); margin-bottom: 20px;">{{ sections.promise.title if sections and
+                sections.promise else 'THE EIDIKOS PROMISE' }}</h3>
+            <p style="color: white; font-size:1.2rem; max-width: 800px; margin: 0 auto;">{{ (sections.promise.content |
+                safe) if sections and sections.promise else 'To deliver world-class educational and professional
+                platforms
+                that inspire excellence, unlock potential, and connect people across the globe.' }}</p>
+            <div style="margin-top: 30px;">
+                <a href="{{ url_for('main.join') }}" class="btn btn-gold">Get Started</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

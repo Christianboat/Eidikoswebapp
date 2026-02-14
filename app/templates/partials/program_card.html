@@ -1,0 +1,28 @@
+<div class="flagship-card show" data-category="{{ program.type }}">
+    {% if program.image_filename %}
+    <img src="{{ url_for('static', filename='uploads/programs/' + program.image_filename) }}" alt="{{ program.name }}"
+        class="card-img"
+        style="width:100%; height:180px; object-fit:contain; background-color: white; border-bottom: 1px solid #eee; border-radius:10px 10px 0 0; margin-bottom:15px; padding: 10px;">
+    {% elif program.icon %}
+    <div class="card-icon-wrapper"
+        style="font-size: 3rem; color: var(--gold); margin-bottom: 15px; text-align: center;">
+        <i class="{{ program.icon }}"></i>
+    </div>
+    {% endif %}
+    <div class="card-body-content">
+        <span
+            class="badge {{ 'bg-info' if program.type == 'competitions' else 'bg-success' if program.type == 'training' else 'bg-primary' }}"
+            style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; display: inline-block; padding: 4px 8px; border-radius: 4px; color: white;">
+            {{ program.type|replace('_', ' ')|capitalize }}
+        </span>
+        <h3 style="margin-top: 0; font-family: 'Playfair Display', serif;">{{ program.name|safe }}</h3>
+        <p class="small text-muted"
+            style="height: 4.5em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; line-clamp: 3;">
+            {{ program.excerpt if program.excerpt else (program.description[:100] + '...' if program.description else
+            '') }}
+        </p>
+        <a href="{{ program.detail_url }}" class="btn-text-link">
+            {{ program.cta_text if program.cta_text else 'Learn More' }} <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+</div>

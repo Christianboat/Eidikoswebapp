@@ -1,0 +1,143 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Overview{% endblock %}
+
+{% block content %}
+<!-- DASHBOARD STATS -->
+<div class="dashboard">
+    <!-- PAGES CARD -->
+    <a href="{{ url_for('admin.list_pages') }}" class="dashboard-card card-primary">
+        <div class="card-header-flex">
+            <h5 class="card-title">Total Pages</h5>
+            <div class="card-icon icon-primary">
+                <i class="fas fa-file-alt"></i>
+            </div>
+        </div>
+        <div class="card-value">{{ stats.pages }}</div>
+        <div class="card-change">
+            <span class="change-positive"><i class="fas fa-check"></i> Active</span>
+            <span>Site Content</span>
+        </div>
+    </a>
+
+    <!-- PROGRAMS CARD -->
+    <a href="{{ url_for('admin.list_programs') }}" class="dashboard-card card-secondary">
+        <div class="card-header-flex">
+            <h5 class="card-title">Programs</h5>
+            <div class="card-icon icon-secondary">
+                <i class="fas fa-chalkboard-teacher"></i>
+            </div>
+        </div>
+        <div class="card-value">{{ stats.programs }}</div>
+        <div class="card-change">
+            <span>Dynamic offerings</span>
+        </div>
+    </a>
+
+    <!-- PARTNERSHIPS CARD -->
+    <a href="{{ url_for('admin.list_partnerships') }}" class="dashboard-card card-accent">
+        <div class="card-header-flex">
+            <h5 class="card-title">Partnerships</h5>
+            <div class="card-icon icon-accent">
+                <i class="fas fa-handshake"></i>
+            </div>
+        </div>
+        <div class="card-value">{{ stats.partnerships }}</div>
+        <div class="card-change">
+            <span class="change-positive"><i class="fas fa-arrow-up"></i></span>
+            <span>Growing network</span>
+        </div>
+    </a>
+
+    <!-- TEAM CARD -->
+    <a href="{{ url_for('admin.list_team') }}" class="dashboard-card card-info">
+        <div class="card-header-flex">
+            <h5 class="card-title">Team Members</h5>
+            <div class="card-icon icon-info">
+                <i class="fas fa-users"></i>
+            </div>
+        </div>
+        <div class="card-value">{{ stats.team }}</div>
+        <div class="card-change">
+            <span>Leadership & Staff</span>
+        </div>
+    </a>
+
+    <!-- SPONSORS CARD -->
+    <a href="{{ url_for('admin.list_sponsors') }}" class="dashboard-card"
+        style="border-left: 4px solid var(--accent); background: white;">
+        <div class="card-header-flex">
+            <h5 class="card-title">Sponsors</h5>
+            <div class="card-icon"
+                style="color: var(--accent); background: rgba(212, 175, 55, 0.1); width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-building"></i>
+            </div>
+        </div>
+        <div class="card-value">{{ stats.sponsors }}</div>
+        <div class="card-change">
+            <span>Footer Ticker</span>
+        </div>
+    </a>
+</div>
+
+<div class="row">
+    <!-- RECENT NEWS / ACTIVITY -->
+    <div class="col-lg-8">
+        <div class="recent-activity">
+            <div class="card-header-flex">
+                <h5 class="card-title">Recent News & Articles</h5>
+                <a href="{{ url_for('admin.create_news') }}" class="btn btn-sm btn-outline-primary">Post New</a>
+            </div>
+
+            <div class="activity-list">
+                {% for article in recent_news %}
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-newspaper"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-title">{{ article.title }}</div>
+                        <div class="activity-time">{{ article.date_published.strftime('%B %d, %Y') if
+                            article.date_published else 'Draft' }}</div>
+                    </div>
+                    <div class="activity-action">
+                        <a href="{{ url_for('admin.edit_news', id=article.id) }}" class="btn btn-sm btn-light"><i
+                                class="fas fa-edit"></i></a>
+                    </div>
+                </div>
+                {% else %}
+                <div class="p-3 text-center text-muted">No recent news articles found.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="col-lg-4">
+        <div class="dashboard-card">
+            <h5 class="card-title mb-4">Quick Actions</h5>
+            <div class="d-grid gap-3">
+                <a href="{{ url_for('admin.create_program') }}"
+                    class="btn btn-primary d-flex align-items-center justify-content-between">
+                    <span>Add New Program</span>
+                    <i class="fas fa-plus-circle"></i>
+                </a>
+                <a href="{{ url_for('admin.create_news') }}"
+                    class="btn btn-secondary d-flex align-items-center justify-content-between">
+                    <span>Publish News Article</span>
+                    <i class="fas fa-pen-fancy"></i>
+                </a>
+                <a href="{{ url_for('admin.create_partnership') }}"
+                    class="btn btn-warning text-dark d-flex align-items-center justify-content-between">
+                    <span>Add New Partner</span>
+                    <i class="fas fa-handshake"></i>
+                </a>
+                <a href="{{ url_for('admin.create_metric') }}"
+                    class="btn btn-info text-white d-flex align-items-center justify-content-between">
+                    <span>Update Metrics</span>
+                    <i class="fas fa-chart-bar"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

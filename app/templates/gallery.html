@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Media Gallery | Eidikos Global Events{% endblock %}
+
+{% block content %}
+<!-- GALLERY HERO -->
+<section class="gallery-hero"
+    style="background: linear-gradient(135deg, var(--primary), var(--secondary)); padding: 120px 0 60px; color: white; text-align: center;">
+    <div class="container">
+        <h1 style="font-size: 3.5rem; margin-bottom: 20px; font-family: 'Playfair Display', serif;">Media Gallery</h1>
+        <p class="lead" style="font-size: 1.25rem; max-width: 800px; margin: 0 auto; opacity: 0.9;">
+            Capturing the moments that define our impact across the globe.
+        </p>
+    </div>
+</section>
+
+<!-- MAIN GALLERY SECTION -->
+<section class="gallery-main" style="padding: 60px 0 100px;">
+    <div class="container">
+
+        <!-- Gallery Filters -->
+        <div class="gallery-filters mb-5 d-flex flex-wrap justify-content-center gap-3">
+            <button class="filter-btn active" data-filter="all">All Media</button>
+            {% if gallery_programs %}
+            {% for prog in gallery_programs %}
+            <button class="filter-btn" data-filter="prog-{{ prog.id }}">{{ prog.name }}</button>
+            {% endfor %}
+            {% endif %}
+            <button class="filter-btn" data-filter="media-image">Photos</button>
+            <button class="filter-btn" data-filter="media-video">Videos</button>
+        </div>
+
+        <div class="gallery-grid" id="full-gallery"
+            style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px;">
+            {% if gallery_items %}
+            {% for item in gallery_items %}
+            <div class="gallery-item filter-item prog-{{ item.program_id if item.program_id else 'none' }} media-{{ 'video' if item.video_url else 'image' }}"
+                style="position: relative; overflow: hidden; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); height: 350px; background: #f8f9fa; transition: all 0.4s ease;">
+
+                {% if item.video_url %}
+                <div class="video-container" style="height: 100%; position: relative;">
+                    <iframe src="{{ item.video_url|youtube_embed }}" style="width: 100%; height: 100%; border: 0;"
+                        allowfullscreen></iframe>
+                </div>
+                {% else %}
+                <img src="{{ url_for('static', filename='uploads/gallery/' + item.image_filename) }}"
+                    alt="{{ item.title }}"
+                    style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;">
+                {% endif %}
+
+                {% if item.title %}
+                <div class="gallery-caption"
+                    style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8)); color: white; padding: 25px 20px 15px; transform: translateY(100%); transition: transform 0.3s ease;">
+                    <h4 style="font-size: 1.1rem; margin: 0; font-weight: 600;">{{ item.title }}</h4>
+                    {% if item.program %}
+                    <small style="opacity: 0.8; font-size: 0.8rem;">{{ item.program.name }}</small>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            {% else %}
+            <div style="grid-column: 1/-1; text-align: center; padding: 100px 0; color: #888;">
+                <i class="fas fa-images"
+                    style="font-size: 4rem; opacity: 0.2; margin-bottom: 20px; display: block;"></i>
+                <h3>No media found.</h3>
+                <p>Check back soon for updates from our latest events.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<style>
+    .filter-btn {
+        padding: 10px 25px;
+        border-radius: 50px;
+        border: 2px solid #eee;
+        background: white;
+        color: #555;
+        font-weight: 700;
+        font-size: 0.95rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+    }
+
+    .filter-btn:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+        transform: translateY(-2px);
+    }
+
+    .filter-btn.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+        box-shadow: 0 8px 20px rgba(0, 46, 93, 0.2);
+    }
+
+    .gallery-item:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .gallery-item:hover img {
+        transform: scale(1.1);
+    }
+
+    .gallery-item:hover .gallery-caption {
+        transform: translateY(0);
+    }
+
+    .filter-item.hidden {
+        display: none;
+        opacity: 0;
+        transform: scale(0.8);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const galleryItems = document.querySelectorAll('.filter-item');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const filter = btn.getAttribute('data-filter');
+
+                // Update active state
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // Filter items with a nice animation feel
+                galleryItems.forEach(item => {
+                    item.style.transition = 'all 0.4s ease';
+                    if (filter === 'all' || item.classList.contains(filter)) {
+                        item.classList.remove('hidden');
+                        setTimeout(() => {
+                            item.style.opacity = '1';
+                            item.style.transform = 'scale(1)';
+                        }, 10);
+                    } else {
+                        item.style.opacity = '0';
+                        item.style.transform = 'scale(0.8)';
+                        setTimeout(() => {
+                            item.classList.add('hidden');
+                        }, 400);
+                    }
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}
